@@ -1,42 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Scrub Test</title>
-  <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-    }
+<meta charset="utf-8" />
+<title>Frame Scrub</title>
 
-    img {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      position: fixed;
-      inset: 0;
-    }
-  </style>
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: black;
+}
+
+#frame {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  inset: 0;
+}
+</style>
 </head>
 
 <body>
 
-<img id="frame" src="https://freight.cargo.site/t/original/i/F2890756621115255546165743601349/-Frame_00002.png" />
+<img id="frame" />
 
 <script>
-const frames = [
-  "https://freight.cargo.site/t/original/i/F2890756621115255546165743601349/-Frame_00002.png",
-  "https://freight.cargo.site/t/original/i/P2890756621096808802092034049733/-Frame_00003.png"
-];
 
-const img = document.getElementById("frame");
+/* =========================
+   CONFIG
+   ========================= */
+const TOTAL_FRAMES = 144;
+const PAD = 5; // frame_00001 style → 5 digits
 
-window.addEventListener("mousemove", (e) => {
-  const i = (e.clientX < window.innerWidth / 2) ? 0 : 1;
-  img.src = frames[i];
+const BASE = "https://alejferrandiz-boop.github.io/stills/frame_";
+
+/* =========================
+   BUILD FRAME LIST
+   ========================= */
+const frames = [];
+
+for (let i = 1; i <= TOTAL_FRAMES; i++) {
+  const num = String(i).padStart(PAD, "0");
+  frames.push(`${BASE}${num}.png`);
+}
+
+/* =========================
+   PRELOAD (important)
+   ========================= */
+frames.forEach(src => {
+  const img = new Image();
+  img.src = src;
 });
+
+/* =========================
+   INIT
+   ========================= */
+const img = document.getElementById("frame");
+img.src = frames[0];
+
+/* =========================
+   SMOOTH SCRUB STATE
+   ========================= */
+let targetIndex = 0;
+let currentIndex = 0;
+
+/* =========================
+   MOUSE CONTROL
+   ========================= */
+window.addEventListener("mousemove", (e) => {
+  const percent = e.clientX / window.innerWidth;
+  targetIndex = Math.floor(percent * (frames.length - 1));
+});
+
+/* =========================
+   ANIMATION LOOP (smooth interpolation)
+   ========================= */
+function animate() {
+  currentIndex += (targetIndex - currentIndex) * 0.15;
+
+  const frame = frames[Math.round(currentIndex)];
+  if (frame && img.src !== frame) {
+    img.src = frame;
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
 </script>
 
 </body>
