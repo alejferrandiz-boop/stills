@@ -1,1 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Scrub Test</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: black;
+    }
 
+    img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      position: fixed;
+      inset: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<img id="frame" src="https://freight.cargo.site/t/original/i/F2890756621115255546165743601349/-Frame_00002.png" />
+
+<script>
+const frames = [
+  "https://freight.cargo.site/t/original/i/F2890756621115255546165743601349/-Frame_00002.png",
+  "https://freight.cargo.site/t/original/i/P2890756621096808802092034049733/-Frame_00003.png"
+];
+
+const img = document.getElementById("frame");
+
+window.addEventListener("mousemove", (e) => {
+  const i = (e.clientX < window.innerWidth / 2) ? 0 : 1;
+  img.src = frames[i];
+});
+</script>
+
+</body>
+</html>
