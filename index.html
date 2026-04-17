@@ -1,7 +1,10 @@
 <script>
 
 const BASE = "https://alejferrandiz-boop.github.io/stills/frame_";
-const PAD = 6;   // 🔥 THIS is the fix
+
+// all possible padding styles your export uses
+const PADS = [4, 5, 6];
+
 const GUESS_MAX = 300;
 
 function checkImage(url) {
@@ -16,28 +19,31 @@ function checkImage(url) {
 async function buildFrames() {
   const valid = [];
 
-  const checks = [];
-
   for (let i = 1; i <= GUESS_MAX; i++) {
-    const num = String(i).padStart(PAD, "0"); // 👈 now matches frame_000100
-    const url = `${BASE}${num}.png`;
 
-    checks.push(
-      checkImage(url).then(res => {
-        if (res) valid.push(res);
-      })
-    );
+    const attempts = PADS.map(pad => {
+      const num = String(i).padStart(pad, "0");
+      return `${BASE}${num}.png`;
+    });
+
+    const results = await Promise.all(attempts.map(checkImage));
+
+    const found = results.find(Boolean);
+
+    if (found) valid.push(found);
   }
 
-  await Promise.all(checks);
-
-  valid.sort();
   return valid;
 }
 
 (async function init() {
 
   const frames = await buildFrames();
+
+  if (!frames.length) {
+    console.error("No frames found.");
+    return;
+  }
 
   const img = document.getElementById("frame");
   img.src = frames[0];
