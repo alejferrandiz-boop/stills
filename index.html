@@ -78,7 +78,7 @@ window.addEventListener("mousemove", (e) => {
    ANIMATION LOOP (smooth interpolation)
    ========================= */
 function animate() {
-  currentIndex += (targetIndex - currentIndex) * 0.04;
+  currentIndex += (targetIndex - currentIndex) * 0.035;
 
   const frame = frames[Math.round(currentIndex)];
   if (frame && img.src !== frame) {
