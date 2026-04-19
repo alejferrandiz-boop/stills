@@ -71,14 +71,14 @@ let currentIndex = 0;
    ========================= */
 window.addEventListener("mousemove", (e) => {
   const percent = e.clientX / window.innerWidth;
-  targetIndex = Math.floor(percent * (frames.length - 1));
+  targetIndex = percent * (frames.length - 1));
 });
 
 /* =========================
    ANIMATION LOOP (smooth interpolation)
    ========================= */
 function animate() {
-  currentIndex += (targetIndex - currentIndex) * 0.15;
+  currentIndex += (targetIndex - currentIndex) * 0.05;
 
   const frame = frames[Math.round(currentIndex)];
   if (frame && img.src !== frame) {
